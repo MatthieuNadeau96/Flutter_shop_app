@@ -67,25 +67,27 @@ class Products with ChangeNotifier {
   //   notifyListeners();
   // }
 
-  void addProduct(Product product) {
+  Future<void> addProduct(Product product) {
     const url = 'https://flutter-shop-app-9a5c9.firebaseio.com/products.json';
-    http.post(url, body: json.encode({
+    return http.post(url, body: json.encode({
       'title': product.title,
       'description': product.description,
       'imageUrl': product.imageUrl,
       'price': product.price,
       'isFavorite': product.isFavorite,
-    }),);
-    final newProduct = Product(
+    }),).then((response) {
+      // print(json.decode(response.body));
+      final newProduct = Product(
       title: product.title,
       description: product.description,
       price: product.price,
       imageUrl: product.imageUrl,
-      id: DateTime.now().toString(),
+      id: json.decode(response.body)['name'],
     );
     _items.add(newProduct);
     // _items.insert(0, newProduct); // at the start of the list
     notifyListeners();
+    });
   }
 
   void updateProduct(String id, Product newProduct) {
