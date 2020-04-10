@@ -67,6 +67,16 @@ class Products with ChangeNotifier {
   //   notifyListeners();
   // }
 
+  Future<void> fetchAndSetProducts() async {
+    const url = 'https://flutter-shop-app-9a5c9.firebaseio.com/products.json';
+    try {
+      final response = await http.get(url);
+      print(json.decode(response.body));
+    } catch (error) {
+      throw (error);
+    } finally {}
+  }
+
   Future<void> addProduct(Product product) async {
     const url = 'https://flutter-shop-app-9a5c9.firebaseio.com/products.json';
     try {
