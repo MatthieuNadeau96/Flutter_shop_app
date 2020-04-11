@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 
+import '../models/http_exception.dart';
 import './product.dart';
 
 class Products with ChangeNotifier {
@@ -138,17 +139,19 @@ class Products with ChangeNotifier {
     }
   }
 
-  void deleteProduct(String id) {
+  Future<void> deleteProduct(String id) async {
     final url = 'https://flutter-shop-app-9a5c9.firebaseio.com//products/$id';
     final existingProductIndex = _items.indexWhere((prod) => prod.id == id);
     var existingProduct = _items[existingProductIndex];
-    http.delete(url).then((_) {
-      existingProduct = null;
-    }).catchError((_) {
-      _items.insert(existingProductIndex, existingProduct);
-      notifyListeners();
-    });
     _items.removeAt(existingProductIndex);
-    notifyListeners();
+    notifyListeners(); // immediatly delete
+    final response = await http.delete(url); // wait for the response
+    if (response.statusCode >= 400) {
+      // checking the response
+      _items.insert(existingProductIndex, existingProduct);
+      notifyListeners(); // roll back if error
+      throw HttpException('Could not delete product.');
+    }
+    existingProduct = null; // reset product if no error
   }
 }
