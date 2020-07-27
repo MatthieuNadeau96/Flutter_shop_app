@@ -1,6 +1,11 @@
 {
+<<<<<<< HEAD
     "name": "flutter_portfolio",
     "short_name": "flutter_portfolio",
+=======
+    "name": "flutter_shop_app",
+    "short_name": "flutter_shop_app",
+>>>>>>> 787deba72973a81ab872866b3671b3e514eab482
     "start_url": ".",
     "display": "standalone",
     "background_color": "#0175C2",
